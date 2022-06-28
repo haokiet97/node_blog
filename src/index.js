@@ -2,9 +2,14 @@ const express = require("express")
 const handlebars = require("express-handlebars")
 const path = require("path")
 const morgan = require("morgan")
+const route = require("./routes")
+const db = require("./config/db")
+//connect db
+db.connect()
+
+//express
 const app = express()
 const port = 3000
-const route = require("./routes")
 
 app.use(morgan("combined"))
 
@@ -19,7 +24,7 @@ app.use("/statics", express.static(path.resolve(__dirname, "public")))
 app.engine(".hbs", handlebars.engine({extname: ".hbs"}))
 app.set("view engine", ".hbs")
 // app.enable('view cache')
-app.set("views", path.resolve(__dirname, "./resources/views"))
+app.set("views", path.resolve(__dirname, "resources", "views"))
 // app.set("views", path.join(__dirname, "./resources/views"))
 
 // Routes init
