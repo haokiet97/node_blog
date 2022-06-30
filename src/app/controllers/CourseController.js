@@ -26,7 +26,13 @@ class CourseController {
     }
 
     create(req, res, next) {
-        res.json(req.body)
+        Course.create(req.body, (err, small) => {
+            if (err) {
+                res.json(err)
+            }
+            console.log(`create course successfully: ${small}`)
+        })
+        // res.json(req.body)
     }
 
     edit(req, res, next) {
