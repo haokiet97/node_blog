@@ -4,7 +4,7 @@ const {multipleMongooseToObject, mongooseToObject} = require("../../util/mongoos
 class CourseController {
 
     index(req, res, next) {
-        Course.find({})
+        Course.find({}).sortable(req)
             .then(courses => {
                 res.render("courses/index", {courses: multipleMongooseToObject(courses)})
             })

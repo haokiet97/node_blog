@@ -5,6 +5,10 @@ const path = require("path")
 const morgan = require("morgan")
 const route = require("./routes")
 const db = require("./config/db")
+//import middleware
+
+const sortMiddleware = require("./app/middlewares/sortMiddleware")
+
 //connect db
 db.connect()
 
@@ -13,6 +17,8 @@ const app = express()
 const port = 3000
 
 app.use(morgan("combined"))
+//add middleware CUSTOM sort
+app.use(sortMiddleware)
 
 // add middleware to get body params
 app.use(express.urlencoded({extended: true}))

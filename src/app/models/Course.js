@@ -20,6 +20,18 @@ const Course = new Schema({
     image: { type: String, maxLength: 500 },
 }, { timestamps: true})
 
+//Custom query helper
+
+Course.query.sortable = function (req) {
+    if (req.hasOwnProperty('_sort')) {
+        const isValidTye = ["asc", "desc"].includes(req.query.type)
+        return this.sort({
+            [req.query.type]: isValidTye ? req.query.type : "desc"
+        })
+    }
+    return this
+}
+
 //ADD plugin
 //set plugin softdelete for CourseModel
 Course.plugin(mongoose_delete, { deletedAt : true, indexFields: true, overrideMethods: 'all' })
