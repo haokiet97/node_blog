@@ -10,9 +10,28 @@
                 <p class="card-text">{{this.description}}</p>
                 <a href="/courses/{{this._id}}/update" class="btn btn-primary">edit</a>
                 <a href="/courses/{{this.slug}}" class="btn btn-primary">show</a>
+                <button class="btn btn-warning" data-id="{{this._id}}" onclick="deleteCourse(this)">delete</button>
             </div>
         </div>
     </div>
     {{/each}}
 </div>
 </div>
+
+<div class="form hidden">
+<form method="post" id="delete-form">
+    <input type="hidden" name="_method" value="DELETE"/>
+</form>
+</div>
+
+<script>
+function deleteCourse(course_el){
+    let course_id = $(course_el).data("id")
+    console.log(course_id)
+    let deleteForm = $("form#delete-form")
+    deleteForm.attr("action", `courses/${course_id}`)
+    if (window.confirm("Do you want DELETE this coure?")) {
+       deleteForm.submit()
+    }
+}
+</script>
