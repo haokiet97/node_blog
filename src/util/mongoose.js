@@ -4,5 +4,8 @@ module.exports = {
     },
     mongooseToObject: function (mongoose) {
         return mongoose ? mongoose.toObject() : mongoose
+    },
+    addPropertiesToObject: function (objects, properties){
+        return objects.map(obj=> ({ ...obj, ...properties}))
     }
 }

@@ -14,6 +14,7 @@ db.connect()
 
 //express
 const app = express()
+const host = "0.0.0.0"
 const port = 3000
 
 app.use(morgan("combined"))
@@ -54,6 +55,6 @@ app.set("views", path.resolve(__dirname, "resources", "views"))
 // Routes init
 route(app)
 
-app.listen(port, () => {
+app.listen(port,host, () => {
   console.log(`Example app listening on port ${port}, view"s dir: ${path.resolve(__dirname, "./resources/views")}`)
 })
