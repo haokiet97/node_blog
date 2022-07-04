@@ -1,42 +1,42 @@
 <p>Cảm ơn bạn đã dử dụng thẻ Gtap của chúng tôi. Vui lòng bấm tiếp tục để Đăng Ký và Cập nhật thông tin cá nhân cho thẻ</p>
 <form method="POST">
     <input type="hidden" name="_method" value="patch">
-    <input type="text" name="social_networks[0][name]" value="name1">
-    <input type="text" name="social_networks[0][url]" value="url1">
-    <input type="text" name="social_networks[1][name]" value="name2">
-    <input type="text" name="social_networks[1][url]" value="url2">
-    <input type="submit" text="Tiếp tục">
-</form>
-
-
-<form method="POST">
-    <input type="hidden" name="_method" value="patch">
+    <input type="hidden" id="social-networks-length" value="{{socialNetworks.length}}"></input>
+    {{#each socialNetworks}}
+    <input type="hidden" name="socialNetworks[{{@index}}][_id]" value="{{this._id}}"/>
     <div class="form-group">
-        <label for="social-network-name"> Hãy chọn Mạng Xã Hội</label>
-        <select class="form-control" id="social-network-name" name="socialNetworks[0][name]">
-            <option value="1">Facebook</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
+        <label for="social-network-name"> Mạng Xã Hội</label>
+        <select class="form-control" id="social-network-name" name="socialNetworks[{{@index}}][name]">
+            <option value="facebook">Facebook</option>
+            <option value="twitter">Twitter</option>
+            <option value="tiktok">Tiktok</option>
         </select>
     </div>
     <div class="form-group">
         <label for="social-network-account-name">Tên hiển thị</label>
-        <input type="text" class="form-control" name="socialNetworks[0][accountName]" id="social-network-account-name"
-               placeholder="Nhập tên hiển thị của bạn" maxlength="255">
+        <input type="text" class="form-control" name="socialNetworks[{{@index}}][accountName]" id="social-network-account-name"
+               placeholder="Nhập tên hiển thị của bạn" maxlength="255" value="{{this.accountName}}">
     </div>
     <div class="form-group">
         <label for="social-network-url">Địa chỉ trang cá nhân</label>
-        <input type="url" class="form-control" name="socialNetworks[0][profileUrl]" id="social-network-url"
+        <input type="url" class="form-control" name="socialNetworks[{{@index}}][profileUrl]" id="social-network-url"
                placeholder="ví dụ: https://www.facebook.com/giaplinux hoặc https://www.facebook.com/profile.php?id=100027318624242"
-               maxlength="255" value="https://">
+               maxlength="255" value="{{this.profileUrl}}">
     </div>
     <div class="form-group">
         <label for="social-network-description">Thông tin thêm</label>
-        <textarea class="form-control" name="socialNetworks[0][description]" id="social-network-description" rows="3" placeholder="Đây là thông tin của người đẹp trai xinh gái "></textarea>
+        <textarea class="form-control" name="socialNetworks[{{@index}}][description]" id="social-network-description" rows="3" placeholder="Đây là thông tin của người đẹp trai xinh gái ">{{this.description}}</textarea>
     </div>
+    <hr/>
+    {{/each}}
     <div class="form-group">
-        <input type="submit" class="btn btn-primary" text="Xác Nhận">
+        <button class="btn btn-secondary" id="add-social-network">Thêm thông tin</button>
+        <input type="submit" class="btn btn-primary" value="Xác Nhận">
     </div>
 </form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    alert($("#social-networks-length").val(3));
+});
+</script>

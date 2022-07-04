@@ -1,6 +1,6 @@
 const Tag = require("../models/Tag")
 const SocialNetwork = require("../models/SocialNetwork")
-const {multipleMongooseToObject, mongooseToObject} = require("../../util/mongoose")
+const {multipleMongooseToObject, mongooseToObject, addPropertiesToObject} = require("../../util/mongoose")
 
 class TagController {
 
@@ -41,12 +41,20 @@ class TagController {
     // }
     //[GET] tags/:id/update
     edit(req, res, next) {
+        let currentUserId = "62c28c81097b12b62594c47d" //get from session
         Tag.findById(req.params.id)
             .then(tag => {
-                if (tag.userId) {
+                if (tag.userId && tag.userId !== currentUserId) {
                     return res.redirect(`/tags/${tag._id}`)
                 }
-                res.render("tags/edit", {tag: mongooseToObject(tag)})
+                SocialNetwork.find({tagId: req.params.id})
+                    .then(socialNetworks => {
+                        res.render("tags/edit", {
+                            tag: mongooseToObject(tag),
+                            socialNetworks: multipleMongooseToObject(socialNetworks)
+                        })
+                    }).catch(next)
+
             })
             .catch(next)
     }
@@ -54,8 +62,28 @@ class TagController {
     //[PATH] tags/:id/update
     update(req, res, next) {
         // require login
-        let currentUserId = "62bff197aaa5337144dfb445" //TODO: get current userId from Cookie
+            let currentUserId = "62c28c81097b12b62594c47d" //TODO: get current userId from Cookie
         console.log(req.body)
+
+        let updateTagUserFunc = Tag.findOneAndUpdate({_id: req.params.id}, {...req.body, userId: currentUserId})
+        let createSocialNetworksFunc = SocialNetwork.insertMany(addPropertiesToObject(req.body.socialNetworks, {tagId: req.params.id, userId: currentUserId}))
+        let upsertSocialNetworksFunc = SocialNetwork.bulkWrite(
+            req.body.socialNetworks.map((socialNetwork) =>
+                ({
+                    updateOne: {
+                        filter: {_id: socialNetwork._id, userId: currentUserId},
+                        update: {$set: {...socialNetwork, tagId: req.params.id, userId: currentUserId}},
+                        upsert: true
+                    }
+                })
+            )
+        )
+
+        Promise.all([updateTagUserFunc, upsertSocialNetworksFunc]).then(
+            ([tag, socialNetworks]) => {
+                res.json([tag, socialNetworks])
+            }
+        ).catch(next)
 
         // Tag.findOneAndUpdate({_id: req.params.id}, {...req.body, userId: currentUserId}).then(tag => {
         //     //return res.json(tag)
