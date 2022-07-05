@@ -1,9 +1,11 @@
-<p>Cảm ơn bạn đã dử dụng thẻ Gtap của chúng tôi. Vui lòng bấm tiếp tục để Đăng Ký và Cập nhật thông tin cá nhân cho thẻ</p>
-<form method="POST">
-    <input type="hidden" name="_method" value="patch">
-    <input type="hidden" id="social-networks-length" value="{{socialNetworks.length}}"></input>
-    {{#each socialNetworks}}
-    <input type="hidden" name="socialNetworks[{{@index}}][_id]" value="{{this._id}}"/>
+<p>Cảm ơn bạn đã dử dụng thẻ Gtap của chúng tôi. Vui lòng bấm tiếp tục để Đăng Ký và Cập nhật thông tin cá nhân cho
+    thẻ</p>
+<form method="POST" id="social-networks-form">
+<input type="hidden" name="_method" value="patch"/>
+<input type="hidden" id="social-networks-length" value="{{socialNetworks.length}}"></input>
+{{#each socialNetworks}}
+<div class="nested-fields">
+    <input type="hidden" id="social-network-id" name="socialNetworks[{{@index}}][_id]" value="{{this._id}}"/>
     <div class="form-group">
         <label for="social-network-name"> Mạng Xã Hội</label>
         <select class="form-control" id="social-network-name" name="socialNetworks[{{@index}}][name]">
@@ -14,29 +16,99 @@
     </div>
     <div class="form-group">
         <label for="social-network-account-name">Tên hiển thị</label>
-        <input type="text" class="form-control" name="socialNetworks[{{@index}}][accountName]" id="social-network-account-name"
-               placeholder="Nhập tên hiển thị của bạn" maxlength="255" value="{{this.accountName}}">
+        <input type="text" class="form-control" name="socialNetworks[{{@index}}][accountName]"
+               id="social-network-account-name"
+               placeholder="Nhập tên hiển thị của bạn" maxlength="255" value="{{this.accountName}}"/>
     </div>
     <div class="form-group">
         <label for="social-network-url">Địa chỉ trang cá nhân</label>
         <input type="url" class="form-control" name="socialNetworks[{{@index}}][profileUrl]" id="social-network-url"
                placeholder="ví dụ: https://www.facebook.com/giaplinux hoặc https://www.facebook.com/profile.php?id=100027318624242"
-               maxlength="255" value="{{this.profileUrl}}">
+               maxlength="255" value="{{this.profileUrl}}"/>
     </div>
     <div class="form-group">
         <label for="social-network-description">Thông tin thêm</label>
-        <textarea class="form-control" name="socialNetworks[{{@index}}][description]" id="social-network-description" rows="3" placeholder="Đây là thông tin của người đẹp trai xinh gái ">{{this.description}}</textarea>
+        <textarea class="form-control" name="socialNetworks[{{@index}}][description]"
+                  id="social-network-description" rows="3"
+                  placeholder="Đây là thông tin của người đẹp trai xinh gái ">{{this.description}}</textarea>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-warning" id="remove-social-network">Xóa thông tin MXH này</button>
     </div>
     <hr/>
-    {{/each}}
-    <div class="form-group">
-        <button class="btn btn-secondary" id="add-social-network">Thêm thông tin</button>
-        <input type="submit" class="btn btn-primary" value="Xác Nhận">
-    </div>
+</div>
+{{/each}}
+<div class="form-group">
+    <button class="btn btn-secondary" id="add-social-network">Thêm thông tin MXH</button>
+    <input type="submit" class="btn btn-primary" value="Xác Nhận"/>
+</div>
 </form>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    alert($("#social-networks-length").val(3));
+    let networkLengthEl = $("#social-networks-length")
+
+    function initNestedFieldStr(index) {
+        return `
+            <div class="nested-fields">
+        <div class="form-group">
+            <label for="social-network-name"> Mạng Xã Hội</label>
+            <select class="form-control" id="social-network-name" name="socialNetworks[${index}][name]">
+                <option value="facebook">Facebook</option>
+                <option value="twitter">Twitter</option>
+                <option value="tiktok">Tiktok</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="social-network-account-name">Tên hiển thị</label>
+            <input type="text" class="form-control" name="socialNetworks[${index}][accountName]"
+                   id="social-network-account-name"
+                   placeholder="Nhập tên hiển thị của bạn" maxlength="255" value=""/>
+        </div>
+        <div class="form-group">
+            <label for="social-network-url">Địa chỉ trang cá nhân</label>
+            <input type="url" class="form-control" name="socialNetworks[${index}][profileUrl]" id="social-network-url"
+                   placeholder="ví dụ: https://www.facebook.com/giaplinux hoặc https://www.facebook.com/profile.php?id=100027318624242"
+                   maxlength="255" value="https://"/>
+        </div>
+        <div class="form-group">
+            <label for="social-network-description">Thông tin thêm</label>
+            <textarea class="form-control" name="socialNetworks[${index}][description]"
+                      id="social-network-description" rows="3"
+                      placeholder="Đây là thông tin của người đẹp trai xinh gái "></textarea>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-warning" id="remove-social-network">Xóa thông tin MXH này</button>
+        </div>
+        <hr/>
+    </div>
+        `
+    }
+
+    const socialNetworkForm = $("#social-networks-form")
+
+    socialNetworkForm.find("button#add-social-network").on('click', (event) => {
+        event.preventDefault();
+        let networkLength = parseInt(networkLengthEl.val());
+        socialNetworkForm.find(".nested-fields:last").after(initNestedFieldStr(networkLength));
+        networkLengthEl.val(networkLength + 1);
+    })
+
+    socialNetworkForm.on("click", "button#remove-social-network", (event) => {
+        event.preventDefault();
+        //
+        let removeSocialNetworkBtn = $(event.target);
+        let nestedField = removeSocialNetworkBtn.parents(".nested-fields")
+        let _idInput = nestedField.find("input#social-network-id").val()
+        if (!_idInput){
+            nestedField.remove()
+        }
+        else {
+            nestedField.hide()
+        }
+
+    })
+
+
 });
 </script>

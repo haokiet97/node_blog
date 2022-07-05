@@ -1,6 +1,11 @@
 const Tag = require("../models/Tag")
 const SocialNetwork = require("../models/SocialNetwork")
-const {multipleMongooseToObject, mongooseToObject, addPropertiesToObject} = require("../../util/mongoose")
+const {
+    multipleMongooseToObject,
+    mongooseToObject,
+    addPropertiesToObject,
+    parseOrCreateObjectId
+} = require("../../util/mongoose")
 
 class TagController {
 
@@ -66,22 +71,26 @@ class TagController {
         console.log(req.body)
 
         let updateTagUserFunc = Tag.findOneAndUpdate({_id: req.params.id}, {...req.body, userId: currentUserId})
-        let createSocialNetworksFunc = SocialNetwork.insertMany(addPropertiesToObject(req.body.socialNetworks, {tagId: req.params.id, userId: currentUserId}))
+        // let createSocialNetworksFunc = SocialNetwork.insertMany(addPropertiesToObject(req.body.socialNetworks, {tagId: req.params.id, userId: currentUserId}))
         let upsertSocialNetworksFunc = SocialNetwork.bulkWrite(
-            req.body.socialNetworks.map((socialNetwork) =>
-                ({
-                    updateOne: {
-                        filter: {_id: socialNetwork._id, userId: currentUserId},
-                        update: {$set: {...socialNetwork, tagId: req.params.id, userId: currentUserId}},
-                        upsert: true
+            req.body.socialNetworks.map((socialNetwork) => {
+                    const { _id = parseOrCreateObjectId(null) } = socialNetwork
+                    return {
+                        updateOne: {
+                            filter: {_id, userId: currentUserId},
+                            update: {
+                                $set: {...socialNetwork, tagId: req.params.id, userId: currentUserId},
+                            },
+                            upsert: true
+                        }
                     }
-                })
+                }
             )
         )
 
         Promise.all([updateTagUserFunc, upsertSocialNetworksFunc]).then(
             ([tag, socialNetworks]) => {
-                res.json([tag, socialNetworks])
+                res.json([socialNetworks])
             }
         ).catch(next)
 
@@ -90,7 +99,6 @@ class TagController {
         //     // res.redirect("/tags")
         //     return res.redirect(`/tags/${tag._id}`)
         // }).catch(next)
-        res.json(req.body)
     }
     //[DELETE] tags/:id
     destroy(req, res, next) {
