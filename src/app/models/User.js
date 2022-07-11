@@ -18,6 +18,11 @@ const User = new Schema({
     password: {type: String, maxLength: 255},
     displayName: {type: String, maxLength: 255},
     email: {type: String, maxLength: 255},
+    google: {
+        id: {type: String,},
+        name: {type: String,},
+        email: {type: String,},
+    },
 }, { timestamps: true})
 
 //Custom query helper

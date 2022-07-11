@@ -5,9 +5,16 @@ const path = require("path")
 const morgan = require("morgan")
 const route = require("./routes")
 const db = require("./config/db")
+const cookieSession = require('cookie-session');
+//using passport to login with google
+const passport = require("passport");
+require("./config/passport")
 //import middleware
 
 const sortMiddleware = require("./app/middlewares/sortMiddleware")
+
+//using dotenv
+require("dotenv").config()
 
 //connect db
 db.connect()
@@ -44,8 +51,15 @@ app.use(methodOverride(function (req, res) {
 
 // setting statics files access
 app.use("/statics", express.static(path.resolve(__dirname, "public")))
-//template engine
+//use cookie session
+app.use(cookieSession({
+    name: 'google-auth-session',
+    keys: ['key1', 'key2']
+}))
 
+app.use(passport.initialize())
+app.use(passport.session())
+//template engine
 app.engine(".hbs", handlebars.engine({extname: ".hbs"}))
 app.set("view engine", ".hbs")
 // app.enable('view cache')

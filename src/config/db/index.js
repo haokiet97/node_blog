@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 async function connect() {
     try {
-        await mongoose.connect('mongodb://gtap_user:gtap_pass123@localhost:2717/', {dbName: "gtap_db"})
+        await mongoose.connect('mongodb://usergtap:passgtap@localhost:2717/', {dbName: "gtap_db"})
         console.log("Connect to DB successfully!")
     }
     catch (e) {
