@@ -1,29 +1,24 @@
 const express  = require("express")
 const router = express.Router()
+const authController = require("../app/controllers/AuthController")
 const passport = require("passport");
-require("../config/passport")(passport)
+require("../config/passport")
 
-router.get(
-    "/google",
-    passport.authenticate("google", {scope: ["email", "profile"]})
-);
+router.get("/google", passport.authenticate("google", {scope: ["email", "profile"]}))
 
-// router.get(
-//     "/google/callback",
-//     passport.authenticate("google", {session: false}),
-//     (req, res) => {
-//         console.log(res)
-//         res.redirect("/auth/profile/");
-//     }
-// );
-router.get( '/auth/callback',
-    passport.authenticate( 'google', {
-        successRedirect: '/auth/callback/success',
-        failureRedirect: '/auth/callback/failure'
-}));
+router.get('/google/callback', passport.authenticate('google', {
+    successRedirect: process.env.GOOGLE_CALLBACK_SUCCESS_PATH || '/auth/callback/success',
+    failureRedirect: process.env.GOOGLE_CALLBACK_FAILURE_PATH || '/auth/callback/failure'
+}))
 
-router.get("/profile", (req, res) => {
- res.send("Welcome");
-});
+// Success call back
+router.get('/callback/success' , authController.callbackSuccess)
+
+// failure call back
+router.get('/callback/failure' , authController.callbackFailure)
+
+router.get("/profile", authController.profile)
+
+router.get("/logout", authController.logout)
 
 module.exports = router

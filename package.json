@@ -30,7 +30,7 @@
     "mongoose-delete": "^0.5.4",
     "mongoose-slug-generator": "^1.0.4",
     "mongoose-slug-updater": "^3.3.0",
-    "passport": "^0.6.0",
+    "passport": "^0.5.3",
     "passport-google-oauth2": "^0.2.0"
   },
   "devDependencies": {

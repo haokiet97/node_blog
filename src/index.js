@@ -5,9 +5,9 @@ const path = require("path")
 const morgan = require("morgan")
 const route = require("./routes")
 const db = require("./config/db")
-const cookieSession = require('cookie-session');
 //using passport to login with google
-const passport = require("passport");
+const passport = require("passport")
+const cookieSession = require('cookie-session')
 require("./config/passport")
 //import middleware
 
