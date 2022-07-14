@@ -1,14 +1,15 @@
 const passport = require("passport")
 const GoogleStrategy = require("passport-google-oauth2").Strategy
+const LocalStrategy = require("passport-local").Strategy
 const User = require("../app/models/User")
 
-passport.serializeUser((user , done) => {
-    done(null , user);
-})
-passport.deserializeUser(function(user, done) {
-    done(null, user);
-})
-
+// passport.serializeUser((user , done) => {
+//     done(null , user);
+// })
+// passport.deserializeUser(function(user, done) {
+//     done(null, user);
+// })
+// using authentication Google
 passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -40,3 +41,11 @@ passport.use(new GoogleStrategy({
             }
     }
 ))
+
+// using authentication Local
+// passport.use(new LocalStrategy(User.authenticate()))
+passport.use(User.createStrategy())
+
+// serializeUser
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())

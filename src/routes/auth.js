@@ -19,6 +19,9 @@ router.get('/callback/failure' , authController.callbackFailure)
 
 router.get("/profile", authController.profile)
 
+router.get("/login", authController.login)
+router.get("/signup", authController.signup)
+router.post("/signup", authController.register)
 router.get("/logout", authController.logout)
 
 module.exports = router

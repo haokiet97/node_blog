@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const ObjectId = Schema.ObjectId
+const passportLocalMongoose = require('passport-local-mongoose')
 
 //slug generator
 // import const slug_generator = require("mongoose-slug-generator")
@@ -14,8 +15,7 @@ const slugOptions = {
 const mongoose_delete = require('mongoose-delete');
 
 const User = new Schema({
-    userName: {type: String, maxLength: 255},
-    password: {type: String, maxLength: 255},
+    username: {type: String, maxLength: 255},
     displayName: {type: String, maxLength: 255},
     email: {type: String, maxLength: 255},
     google: {
@@ -42,5 +42,7 @@ User.query.sortable = function (req) {
 User.plugin(mongoose_delete, { deletedAt : true, indexFields: true, overrideMethods: 'all' })
 //use plugin slug for mongoose
 mongoose.plugin(slugGenerator, slugOptions)
+
+User.plugin(passportLocalMongoose, {usernameField: "email", usernameLowerCase: true})
 
 module.exports = mongoose.model("User", User)
