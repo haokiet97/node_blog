@@ -46,10 +46,14 @@ class TagController {
     // }
     //[GET] tags/:id/update
     edit(req, res, next) {
-        let currentUserId = "62c28c81097b12b62594c47d" //get from session
+        let currentUser = req.user //get from session
+        if (!currentUser) {
+            req.session.reqUrl = req.originalUrl
+            return res.redirect("/auth/login")
+        }
         Tag.findById(req.params.id)
             .then(tag => {
-                if (tag.userId && tag.userId !== currentUserId) {
+                if (tag.userId && tag.userId !== currentUser._id) {
                     return res.redirect(`/tags/${tag._id}`)
                 }
                 SocialNetwork.find({tagId: req.params.id})
@@ -67,8 +71,7 @@ class TagController {
     //[PATH] tags/:id/update
     update(req, res, next) {
         // require login
-            let currentUserId = "62c28c81097b12b62594c47d" //TODO: get current userId from Cookie
-        console.log(req.body)
+            let currentUserId = req.user._id
 
         let updateTagUserFunc = Tag.findOneAndUpdate({_id: req.params.id}, {...req.body, userId: currentUserId})
         // let createSocialNetworksFunc = SocialNetwork.insertMany(addPropertiesToObject(req.body.socialNetworks, {tagId: req.params.id, userId: currentUserId}))

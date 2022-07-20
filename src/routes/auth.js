@@ -20,6 +20,11 @@ router.get('/callback/failure' , authController.callbackFailure)
 router.get("/profile", authController.profile)
 
 router.get("/login", authController.login)
+router.post("/login", passport.authenticate('local', {
+    failureRedirect: '/auth/login', failureMessage: true
+}), (req, res) => {
+    res.redirect("/auth/profile")
+})
 router.get("/signup", authController.signup)
 router.post("/signup", authController.register)
 router.get("/logout", authController.logout)

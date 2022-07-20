@@ -15,9 +15,9 @@ const slugOptions = {
 const mongoose_delete = require('mongoose-delete');
 
 const User = new Schema({
-    username: {type: String, maxLength: 255},
-    displayName: {type: String, maxLength: 255},
-    email: {type: String, maxLength: 255},
+    username: {type: String, maxLength: 255, trim: true},
+    displayName: {type: String, maxLength: 255, trim: true},
+    email: {type: String, maxLength: 255, trim: true},
     google: {
         id: {type: String,},
         name: {type: String,},

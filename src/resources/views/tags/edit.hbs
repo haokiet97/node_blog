@@ -87,7 +87,13 @@ document.addEventListener("DOMContentLoaded", function () {
     socialNetworkForm.find("button#add-social-network").on('click', (event) => {
         event.preventDefault();
         let networkLength = parseInt(networkLengthEl.val());
-        socialNetworkForm.find(".nested-fields:last").after(initNestedFieldStr(networkLength));
+        let nestedFieldsLength = $(".nested-fields").length
+        if (nestedFieldsLength === 0) {
+            socialNetworkForm.find("#social-networks-length:last").after(initNestedFieldStr(networkLength));
+        }
+        else{
+            socialNetworkForm.find(".nested-fields:last").after(initNestedFieldStr(networkLength));
+        }
         networkLengthEl.val(networkLength + 1);
     })
 
