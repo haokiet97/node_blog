@@ -105,9 +105,16 @@ class TagController {
     }
     //[DELETE] tags/:id
     destroy(req, res, next) {
-        Tag.delete({_id: req.params.id})
-            .then(() => {
-                res.redirect("back")
+        let currentUser = req.user
+        if (! currentUser){
+            return res.redirect("back")
+        }
+        Tag.delete({_id: req.params.id, userId: currentUser._id})
+            .then((result) => {
+                if(result){
+                    return res.redirect("back")
+                }
+                return next()
             })
             .catch(next)
     }

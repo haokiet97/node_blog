@@ -7,8 +7,8 @@ class AuthController {
                 return res.redirect(process.env.GOOGLE_CALLBACK_FAILURE_PATH || '/auth/callback/failure')
             let redirectTo = "/auth/profile"
             if (req.session.reqUrl) {
-                redirectTo = req.session.reqUrl; // If our redirect value exists in the session, use that.
-                req.session.reqUrl = null; // Once we've used it, dump the value to null before the redirect.
+                redirectTo = req.session.reqUrl // If our redirect value exists in the session, use that.
+                req.session.reqUrl = null // Once we've used it, dump the value to null before the redirect.
             }
             res.redirect(redirectTo)
         } catch (e) {
@@ -45,8 +45,11 @@ class AuthController {
     }
 
     logout(req, res, next) {
-        req.logout()
-        res.redirect("/")
+        if (req.user) {
+            req.logout()
+            return res.redirect("/auth/login")
+        }
+        return res.redirect("back")
     }
 }
 
