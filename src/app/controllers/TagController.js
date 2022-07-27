@@ -21,12 +21,10 @@ class TagController {
         Promise.all([Tag.findById(req.params.id), SocialNetwork.find({tagId: req.params.id})])
             .then(([tag, socialNetworks]) => {
                     if (!tag.userId) {
-                        // TODO: redirect to update tag for current_user
-                        console.log(`Thẻ id: ${tag._id} chưa có thông tin người dùng! Tạo thông tin!`)
-                        res.redirect(`${tag._id}/update`)
-                        return
+                        return res.redirect(`${tag._id}/update`)
                     }
-                    res.json([tag, socialNetworks])
+                    // return res.json([tag, socialNetworks])
+                    return res.render("tags/show")
                 }
             ).catch(next)
     }
