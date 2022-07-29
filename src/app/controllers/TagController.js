@@ -28,21 +28,7 @@ class TagController {
                 }
             ).catch(next)
     }
-    //
-    // new(req, res, next) {
-    //     res.render("courses/new")
-    // }
-    //
-    // create(req, res, next) {
-    //     Course.create(req.body, (err, small) => {
-    //         if (err) {
-    //             res.json(err)
-    //         }
-    //         console.log(`create course successfully: ${small}`)
-    //     })
-    //     res.json(req.body)
-    // }
-    //[GET] tags/:id/update
+
     edit(req, res, next) {
         let currentUser = req.user //get from session
         if (!currentUser) {
@@ -51,7 +37,7 @@ class TagController {
         }
         Tag.findById(req.params.id)
             .then(tag => {
-                if (tag.userId && tag.userId !== currentUser._id) {
+                if (tag.userId && tag.userId.toString() !== currentUser._id.toString()) {
                     return res.redirect(`/tags/${tag._id}`)
                 }
                 SocialNetwork.find({tagId: req.params.id})
