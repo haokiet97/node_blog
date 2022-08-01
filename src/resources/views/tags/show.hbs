@@ -5,7 +5,7 @@
                  class="card-img-top rounded-circle" alt="...">
             <div class="card-body">
                 <h5 class="card-title text-center">@ntkimhue</h5>
-                <h3 class="card-title text-center">Nguyen Thanh Kim Hue</h3>
+                <h3 class="card-title text-center">{{user.displayName}}</h3>
                 <p class="card-text text-center">Some quick example text to build on the card title and make up the bulk
                     of the card's
                     content.</p>
@@ -13,27 +13,32 @@
         </div>
     </div>
 </div>
-<div class="row justify-content-center">
-<!--<div class="col-1">-->
-<!--    <h1></h1>-->
-<!--</div>-->
-<div class="col-6">
-    <i class="bi bi-facebook"></i>
-    <a href="https://fb.com/giaplinux">Giap Linux</a>
-    <button class="btn btn-secondary">copy</button>
-    <a href="fb://giaplinux/">Mở app</a>
+{{#each socialNetworks}}
+<div class="row justify-content-center social-info-group">
+<div class="col-4 align-items-center social-info">
+    <i class="bi bi-{{this.name}}" style="font-size: 2rem"></i>
+    <a href="{{this.profileUrl}}">{{this.accountName}}</a>
+</div>
+<div class="col-3 social-info-btn">
+    <button class="btn btn-copy"><i class="bi bi-clipboard"></i></button>
+    <a href="{{this.profileUrl}}" class="btn-access"><i class="btn bi bi-arrow-right-circle-fill" style="font-size: 2rem"></i></a>
 </div>
 </div>
+{{/each}}
 
-<div class="row justify-content-center">
-<!--<div class="col-1">-->
-<!--    <h1></h1>-->
-<!--</div>-->
-<div class="col-6">
-    <i class="bi bi-twitter"></i>
-    <a href="https://twitter.com/lehang">leee H</a>
-    <button class="btn btn-secondary">copy</button>
-    <a href="tw://lehang/">Mở app</a>
-</div>
-</div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    $(".btn-copy").on("click", (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        let profileUrlEl = $(e.target).parents(".social-info-btn").find("a.btn-access").attr("href")
+        navigator.clipboard.writeText(profileUrlEl)
+        alert("Copy thành công")
+
+
+    })
+});
+
+
+</script>

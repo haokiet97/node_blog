@@ -8,10 +8,19 @@
     <input type="hidden" id="social-network-id" name="socialNetworks[{{@index}}][_id]" value="{{this._id}}"/>
     <div class="form-group">
         <label for="social-network-name"> Mạng Xã Hội</label>
-        <select class="form-control" id="social-network-name" name="socialNetworks[{{@index}}][name]">
+        <select class="form-control" id="social-network-name" name="socialNetworks[{{@index}}][name]" prev_value="{{this.name}}">
             <option value="facebook">Facebook</option>
-            <option value="twitter">Twitter</option>
+            <option value="instagram">Instagram</option>
+            <option value="line">Line</option>
+            <option value="linkedin">Linkedin</option>
+            <option value="skype">Skype</option>
+            <option value="slack">Slack</option>
+            <option value="snapchat">Snapchat</option>
+            <option value="telegram">Telegram</option>
             <option value="tiktok">Tiktok</option>
+             <option value="twitch">Twitch</option>
+            <option value="twitter">Twitter</option>
+            <option value="youtube">Youtube</option>
         </select>
     </div>
     <div class="form-group">
@@ -51,9 +60,18 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="form-group">
             <label for="social-network-name"> Mạng Xã Hội</label>
             <select class="form-control" id="social-network-name" name="socialNetworks[${index}][name]">
-                <option value="facebook">Facebook</option>
-                <option value="twitter">Twitter</option>
-                <option value="tiktok">Tiktok</option>
+            <option value="facebook">Facebook</option>
+            <option value="instagram">Instagram</option>
+            <option value="line">Line</option>
+            <option value="linkedin">Linkedin</option>
+            <option value="skype">Skype</option>
+            <option value="slack">Slack</option>
+            <option value="snapchat">Snapchat</option>
+            <option value="telegram">Telegram</option>
+            <option value="tiktok">Tiktok</option>
+             <option value="twitch">Twitch</option>
+            <option value="twitter">Twitter</option>
+            <option value="youtube">Youtube</option>
             </select>
         </div>
         <div class="form-group">
@@ -106,6 +124,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!_idInput){
             nestedField.remove()
         }
+    })
+    // select option have prev value
+    $("select#social-network-name").each((index, name_select) => {
+        let prev_value = $(name_select).attr("prev_value")
+        console.log(prev_value)
+        $(name_select).find(`option[value=${prev_value}]`).attr('selected', 'selected')
     })
 
 

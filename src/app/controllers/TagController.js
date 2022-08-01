@@ -1,5 +1,6 @@
 const Tag = require("../models/Tag")
 const SocialNetwork = require("../models/SocialNetwork")
+const User = require("../models/User")
 const {
     multipleMongooseToObject,
     mongooseToObject,
@@ -23,8 +24,13 @@ class TagController {
                     if (!tag.userId) {
                         return res.redirect(`${tag._id}/update`)
                     }
-                    // return res.json([tag, socialNetworks])
-                    return res.render("tags/show")
+                    User.findById({_id: tag.userId.toString()}).then((user) => {
+                        return res.render("tags/show", {
+                            tag: mongooseToObject(tag),
+                            user: mongooseToObject(user),
+                            socialNetworks: multipleMongooseToObject(socialNetworks)
+                        })
+                    }).catch(next)
                 }
             ).catch(next)
     }
