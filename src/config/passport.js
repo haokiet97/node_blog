@@ -2,6 +2,7 @@ const passport = require("passport")
 const GoogleStrategy = require("passport-google-oauth2").Strategy
 const LocalStrategy = require("passport-local").Strategy
 const User = require("../app/models/User")
+const {slugify} = require("../util/slugstring")
 
 // passport.serializeUser((user , done) => {
 //     done(null , user);
@@ -18,27 +19,32 @@ passport.use(new GoogleStrategy({
     },
     async function (request, accessToken, refreshToken, profile, done) {
         try {
-                let existingUser = await User.findOne({'google.id': profile.id});
-                // if user exists return the user
-                if (existingUser) {
-                    return done(null, existingUser);
-                }
-                // if user does not exist create a new user
-                const newUser = new User({
-                    method: 'google',
-                    google: {
-                        id: profile.id,
-                        name: profile.displayName,
-                        email: profile.emails[0].value
-                    },
-                    displayName: profile.displayName,
-                    email: profile.emails[0].value
-                });
-                await newUser.save();
-                return done(null, newUser);
-            } catch (error) {
-                return done(error, false)
+            let existingUser = await User.findOne({'google.id': profile.id})
+            // if user exists return the user
+            if (existingUser) {
+                existingUser.avatarPath = profile.photos[0].value
+                existingUser.username = slugify(profile.displayName)
+                await existingUser.save()
+                return done(null, existingUser)
             }
+            // if user does not exist create a new user
+            const newUser = new User({
+                method: 'google',
+                google: {
+                    id: profile.id,
+                    name: profile.displayName,
+                    email: profile.emails[0].value
+                },
+                displayName: profile.displayName,
+                username: slugify(profile.displayName),
+                email: profile.emails[0].value,
+                avatarPath: profile.photos[0].value
+            });
+            await newUser.save();
+            return done(null, newUser)
+        } catch (error) {
+            return done(error, false)
+        }
     }
 ))
 

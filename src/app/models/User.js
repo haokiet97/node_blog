@@ -18,6 +18,8 @@ const User = new Schema({
     username: {type: String, maxLength: 255, trim: true},
     displayName: {type: String, maxLength: 255, trim: true},
     email: {type: String, maxLength: 255, trim: true},
+    avatarPath: {type: String, maxLength: 512},
+    description: {type: String, maxLength:512, trim: true},
     google: {
         id: {type: String,},
         name: {type: String,},
